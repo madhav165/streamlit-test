@@ -128,6 +128,7 @@ def plot_pie_charts(df, metric, breakup_select):
 
 def get_gs_data():
     gc = GoogleSheets()
+    configure()
 
     sheet_id = os.getenv('sheet_id')
     range_name = 'Data!B:F'
@@ -140,18 +141,23 @@ def get_gs_data():
     for x in ['Debit', 'Credit']:
         df[x] = pd.to_numeric(df[x].str.replace(',',''))
     df['Date'] = pd.to_datetime(df['Date'], format='%d/%m/%Y')
+    a = df.loc[df['Debit']>100000]
+    a.rename(columns={'Debit':'Disbursement'}, inplace=True)
+    a['Disbursement'].fillna(0, inplace=True)
+    df = df.join(a['Disbursement'])
     a = df.groupby(['Date', 'Account','Loan'])\
         .agg({
             'Debit': np.sum, 
-            'Credit': np.sum
+            'Credit': np.sum,
+            'Disbursement': np.sum
             }).reset_index()
     return a
 
 def main():
     # set_bg_hack('background.jpeg')
     
-    # a = get_gs_data()
-    # a.to_csv('data.csv', index=False)
+    a = get_gs_data()
+    a.to_csv('data.csv', index=False)
 
     a = pd.read_csv('data.csv')
 
@@ -161,26 +167,15 @@ def main():
     dates = pd.DataFrame(pd.date_range(date_min, date_max, freq='D'))
     dates.columns = ['Date']
     b = a.pivot(index=['Date'], columns=['Loan', 'Account'], 
-    values=['Debit', 'Credit'])
+    values=['Debit', 'Credit', 'Disbursement'])
     b = b.reset_index()
 
     b.iloc[:, b.columns.get_level_values(0)=='Debit'] = \
         b.iloc[:, b.columns.get_level_values(0)=='Debit'].fillna(0).cumsum()
     b.iloc[:, b.columns.get_level_values(0)=='Credit'] = \
         b.iloc[:, b.columns.get_level_values(0)=='Credit'].fillna(0).cumsum()
-    
-    num = b.iloc[:, b.columns.get_level_values(0)=='Debit'].diff().fillna(0)
-    num[num<100000]=0
-    num2 = b.iloc[0, b.columns.get_level_values(0)=='Debit']\
-        .unstack(level=-2).unstack().dropna(how='all', axis=1)\
-            .reset_index(drop=True)
-    num = num['Debit']
-    num = pd.concat([num2, num.iloc[1:,:]], axis=0)
-    old_idx = num.columns.to_frame()
-    old_idx.insert(0, 'Disbursement', 'Disbursement')
-    num.columns = pd.MultiIndex.from_frame(old_idx)
-    num = num.cumsum()
-    b = pd.concat([b, num], axis=1)
+    b.iloc[:, b.columns.get_level_values(0)=='Disbursement'] = \
+        b.iloc[:, b.columns.get_level_values(0)=='Disbursement'].fillna(0).cumsum()
 
     num = b.iloc[:, b.columns.get_level_values(0)=='Credit'].values\
         - b.iloc[:, b.columns.get_level_values(0)=='Debit'].values\
