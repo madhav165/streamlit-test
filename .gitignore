@@ -1,0 +1,8 @@
+token.json
+credentials.json
+background.jpeg
+data.csv
+data2.csv
+.env
+*.pyc
+__pycache__/*
