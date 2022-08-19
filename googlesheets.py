@@ -19,16 +19,13 @@ class GoogleSheets:
             if self.creds and self.creds.expired and self.creds.refresh_token:
                 self.creds.refresh(Request())
             else:
-                try:
-                    os.remove('token.json')
-                except:
-                    pass
                 flow = InstalledAppFlow.from_client_secrets_file(
                     'credentials.json', self.SCOPES)
                 self.creds = flow.run_local_server(port=0)
             # Save the credentials for the next run
             with open('token.json', 'w') as token:
                 token.write(self.creds.to_json())
+
 
     def get_sheet_data(self, sheet_id, range_name):
         try:
