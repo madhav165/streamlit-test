@@ -26,6 +26,7 @@ class GoogleSheets:
             with open('token.json', 'w') as token:
                 token.write(self.creds.to_json())
 
+
     def get_sheet_data(self, sheet_id, range_name):
         try:
             service = build('sheets', 'v4', credentials=self.creds)
