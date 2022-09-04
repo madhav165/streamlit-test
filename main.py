@@ -142,8 +142,8 @@ def get_gs_data():
         df[x] = pd.to_numeric(df[x].str.replace(',',''))
     df['Date'] = pd.to_datetime(df['Date'], format='%d/%m/%Y')
     a = df.loc[df['Debit']>100000]
-    a.rename(columns={'Debit':'Disbursement'}, inplace=True)
-    a['Disbursement'].fillna(0, inplace=True)
+    a = a.rename(columns={'Debit':'Disbursement'})
+    a['Disbursement'] = a['Disbursement'].fillna(0)
     df = df.join(a['Disbursement'])
     a = df.groupby(['Date', 'Account','Loan'])\
         .agg({
