@@ -218,7 +218,7 @@ def main():
     #     in_format = json.loads(c.content)
     # alt.renderers.set_embed_options(formatLocale=in_format)
 
-    st.title('Loans for Prestige Tranquil')
+    st.title('Loans for Madhav')
 
     page = st.selectbox('Choose your page', ['Current Snapshot', 
     'Total to be Paid', 'Pending Amount', 'Total Paid', 'Interest Paid',
@@ -270,6 +270,19 @@ def main():
     home_total_credit_amount = b.iloc[-1, (b.columns.get_level_values(0)=='Credit')
     &(b.columns.get_level_values(1)=='Home Loan')].sum()
 
+    car_pending_amount = b.iloc[-1, (b.columns.get_level_values(0)=='Pending Amount')
+    &(b.columns.get_level_values(1)=='Car Loan')].sum()
+    car_principal_repaid_amount = b.iloc[-1, (b.columns.get_level_values(0)=='Principal Repaid')
+    &(b.columns.get_level_values(1)=='Car Loan')].sum()
+    car_interest_paid_amount = b.iloc[-1, (b.columns.get_level_values(0)=='Interest Paid')
+    &(b.columns.get_level_values(1)=='Car Loan')].sum()
+    car_total_debit_amount = b.iloc[-1, (b.columns.get_level_values(0)=='Debit')
+    &(b.columns.get_level_values(1)=='Car Loan')].sum()
+    car_total_disbursement_amount = b.iloc[-1, (b.columns.get_level_values(0)=='Disbursement')
+    &(b.columns.get_level_values(1)=='Car Loan')].sum()
+    car_total_credit_amount = b.iloc[-1, (b.columns.get_level_values(0)=='Credit')
+    &(b.columns.get_level_values(1)=='Car Loan')].sum()
+
     pending_amount = b.iloc[-1, b.columns.get_level_values(0)=='Pending Amount'].sum()
     principal_repaid_amount = b.iloc[-1, b.columns.get_level_values(0)=='Principal Repaid'].sum()
     interest_paid_amount = b.iloc[-1, b.columns.get_level_values(0)=='Interest Paid'].sum()
@@ -278,9 +291,9 @@ def main():
     total_credit_amount = b.iloc[-1, b.columns.get_level_values(0)=='Credit'].sum()
 
     if page == 'Current Snapshot':
-        col1, col2, col3 = st.columns(3)
+        col1, col2, col3, col4 = st.columns(4)
         with col1:
-            st.subheader('Home Loan')
+            st.subheader('Home')
             # st.metric('Total to be paid', locale.currency(home_total_debit_amount, grouping=True), delta=None, delta_color="normal")
             st.metric('Total to be paid', str(round(home_total_debit_amount/10**5,1))+'L', delta=None, delta_color="normal")
             st.write('({} x total disbursement)'.format(round(home_total_debit_amount/home_total_disbursement_amount, 2)))
@@ -299,7 +312,7 @@ def main():
             st.write('out of')
             st.metric('Total disbursement', str(round(home_total_disbursement_amount/10**5,1))+'L', delta=None, delta_color="normal")
         with col2:
-            st.subheader('Personal Loan')
+            st.subheader('Personal')
             st.metric('Total to be paid', str(round(personal_total_debit_amount/10**5,1))+'L', delta=None, delta_color="normal")
             st.write('({} x total disbursement)'.format(round(personal_total_debit_amount/personal_total_disbursement_amount, 2)))
             st.subheader('-')
@@ -317,6 +330,24 @@ def main():
             st.write('out of')
             st.metric('Total disbursement', str(round(personal_total_disbursement_amount/10**5,1))+'L', delta=None, delta_color="normal")
         with col3:
+            st.subheader('Car')
+            st.metric('Total to be paid', str(round(car_total_debit_amount/10**5,1))+'L', delta=None, delta_color="normal")
+            st.write('({} x total disbursement)'.format(round(car_total_debit_amount/car_total_disbursement_amount, 2)))
+            st.subheader('-')
+            st.metric('Pending amount', str(round(car_pending_amount/10**5,1))+'L', delta=None, delta_color="normal")
+            st.write('({}% of total to be paid)'.format(round(car_pending_amount/car_total_debit_amount*100, 2)))
+            st.subheader('=')
+            st.metric('Total paid', str(round(car_total_credit_amount/10**5,1))+'L', delta=None, delta_color="normal")
+            st.write('({}% of total to be paid)'.format(round(car_total_credit_amount/car_total_debit_amount*100, 2)))
+            st.subheader('-')
+            st.metric('Interest paid', str(round(car_interest_paid_amount/10**5,1))+'L', delta=None, delta_color="normal")
+            st.write('({}% of total paid)'.format(round(car_interest_paid_amount/car_total_credit_amount*100, 2)))
+            st.subheader('=')
+            st.metric('Principal repaid', str(round(car_principal_repaid_amount/10**5,1))+'L', delta=None, delta_color="normal")
+            st.write('({}% of total disbursement)'.format(round(car_principal_repaid_amount/car_total_disbursement_amount*100, 2)))
+            st.write('out of')
+            st.metric('Total disbursement', str(round(car_total_disbursement_amount/10**5,1))+'L', delta=None, delta_color="normal")
+        with col4:
             st.subheader('Total')
             st.metric('Total to be paid', str(round(total_debit_amount/10**5,1))+'L', delta=None, delta_color="normal")
             st.write('({} x total disbursement)'.format(round(total_debit_amount/total_disbursement_amount, 2)))
