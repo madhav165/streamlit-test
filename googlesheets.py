@@ -52,6 +52,7 @@ class GoogleSheets:
             self.creds = Credentials.from_authorized_user_file('token.json', self.SCOPES)
         # If there are no (valid) credentials available, let the user log in.
         if not self.creds or not self.creds.valid:
+            os.remove('token.json')
             if self.creds and self.creds.expired and self.creds.refresh_token:
                 self.creds.refresh(Request())
             else:
