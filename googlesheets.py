@@ -8,6 +8,42 @@ from googleapiclient.errors import HttpError
 
 class GoogleSheets:
 
+    # def get_authenticated_service():
+    #     credential_path = os.path.join("./", 'sheets.googleapis.com-python-quickstart.json')
+    #     if os.path.exists(credential_path):
+    #         with open(credential_path, 'r') as f:
+    #             credential_params = json.load(f)
+    #         credentials = google.oauth2.credentials.Credentials(
+    #             credential_params["access_token"],
+    #             refresh_token=credential_params["refresh_token"],
+    #             token_uri=credential_params["token_uri"],
+    #             client_id=credential_params["client_id"],
+    #             client_secret=credential_params["client_secret"]
+    #         )
+    #     else:
+    #         flow = InstalledAppFlow.from_client_secrets_file(CLIENT_SECRETS_FILE, SCOPES)
+    #         credentials = flow.run_console()
+    #         with open(credential_path, 'w') as f:
+    #             p = copy.deepcopy(vars(credentials))
+    #             del p["expiry"]
+    #             json.dump(p, f, indent=4)
+    #     return build(API_SERVICE_NAME, API_VERSION, credentials=credentials)
+
+    # def spreadsheets_get(service):
+    #     spreadsheetId = "### spreadsheet ID ###"
+    #     rangeName = "Sheet1!a1:a10"
+    #     results = service.spreadsheets().get(
+    #         spreadsheetId=spreadsheetId,
+    #         ranges=rangeName
+    #     ).execute()
+    #     pp.pprint(results)
+
+
+    # if __name__ == '__main__':
+    #     os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
+    #     service = get_authenticated_service()
+    #     spreadsheets_get(service)
+
     def __init__(self):
         # If modifying these scopes, delete the file token.json.
         self.SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
