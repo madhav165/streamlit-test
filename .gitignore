@@ -6,3 +6,4 @@ data2.csv
 .env
 *.pyc
 __pycache__/*
+venv/*
